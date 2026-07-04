@@ -9,6 +9,7 @@ from pathlib import Path
 from google import genai
 from google.genai import types
 
+from bot import memory
 from config import AI_MODEL, GEMINI_API_KEY
 
 logger = logging.getLogger(__name__)
@@ -37,16 +38,32 @@ FALLBACK_REPLY = (
     "សូមទោស! ឥឡូវនេះមានបញ្ហាបច្ចេកទេសបន្តិច។ សូមសាកល្បងម្តងទៀតក្នុងពេលបន្តិចទៀត។"
 )
 
+_GEMINI_ROLE = {"user": "user", "assistant": "model"}
 
-async def get_ai_reply(user_message: str) -> str:
-    """Send the customer's message to Gemini and return its reply text."""
+
+def _build_contents(chat_id: int, user_message: str) -> list[types.Content]:
+    """Turn stored history + the new message into Gemini's expected format."""
+    contents = [
+        types.Content(role=_GEMINI_ROLE[msg["role"]], parts=[types.Part(text=msg["text"])])
+        for msg in memory.get_history(chat_id)
+    ]
+    contents.append(types.Content(role="user", parts=[types.Part(text=user_message)]))
+    return contents
+
+
+async def get_ai_reply(chat_id: int, user_message: str) -> str:
+    """Send the customer's message (with recent history) to Gemini and return its reply."""
     try:
+        contents = _build_contents(chat_id, user_message)
         response = await _client.aio.models.generate_content(
             model=AI_MODEL,
-            contents=user_message,
+            contents=contents,
             config=types.GenerateContentConfig(system_instruction=SYSTEM_INSTRUCTION),
         )
-        return response.text
+        reply = response.text
+        memory.add_message(chat_id, "user", user_message)
+        memory.add_message(chat_id, "assistant", reply)
+        return reply
     except Exception:
         logger.exception("Gemini API call failed")
         return FALLBACK_REPLY
