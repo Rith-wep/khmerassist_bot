@@ -18,3 +18,13 @@ if not GEMINI_API_KEY:
     raise ValueError(
         "GEMINI_API_KEY is missing. Copy .env.example to .env and fill it in."
     )
+
+_owner_chat_id_raw = os.getenv("OWNER_CHAT_ID")
+if not _owner_chat_id_raw:
+    raise ValueError(
+        "OWNER_CHAT_ID is missing. Copy .env.example to .env and fill it in."
+    )
+try:
+    OWNER_CHAT_ID = int(_owner_chat_id_raw)
+except ValueError:
+    raise ValueError("OWNER_CHAT_ID must be a numeric Telegram chat ID.")
