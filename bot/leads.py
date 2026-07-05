@@ -12,6 +12,7 @@ from pathlib import Path
 
 from telegram import Bot
 
+from bot import memory
 from config import OWNER_CHAT_ID
 
 logger = logging.getLogger(__name__)
@@ -35,6 +36,8 @@ def _save_lead(lead: dict) -> None:
 
 async def process_lead(bot: Bot, chat_id: int, name: str, phone: str, interest: str) -> None:
     """Save a captured lead to disk and notify the business owner on Telegram."""
+    memory.set_known_name(chat_id, name)
+
     lead = {
         "chat_id": chat_id,
         "name": name,
@@ -43,6 +46,10 @@ async def process_lead(bot: Bot, chat_id: int, name: str, phone: str, interest: 
         "timestamp": datetime.now().isoformat(timespec="seconds"),
     }
     _save_lead(lead)
+
+    if OWNER_CHAT_ID is None:
+        logger.warning("OWNER_CHAT_ID not set; lead saved locally but owner was not notified.")
+        return
 
     owner_message = (
         "New lead!\n"

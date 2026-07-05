@@ -48,7 +48,9 @@ khmer-bot/
 │   ├── handlers.py        # Telegram message handlers
 │   ├── ai.py              # AI provider calls, prompt assembly (currently Gemini; isolated so it's swappable)
 │   ├── leads.py           # lead detection, capture flow, owner notification
-│   └── memory.py          # per-chat conversation history
+│   ├── handoff.py         # human handoff detection, owner notification with context
+│   ├── memory.py          # per-chat conversation history + conversation state
+│   └── conversation_log.py # logs every exchange to logs/YYYY-MM-DD.log
 ├── business/
 │   └── business_info.md   # THE CLIENT'S DATA: services, prices, hours, FAQs (editable per client)
 ├── prompts/
@@ -57,6 +59,8 @@ khmer-bot/
 ├── .env.example           # template listing required environment variables
 ├── .env                   # real secrets — NEVER commit, must be in .gitignore
 ├── .gitignore
+├── leads.json             # captured leads (generated at runtime; gitignored)
+├── logs/                  # daily conversation logs + error logs (generated; gitignored)
 └── requirements.txt
 ```
 

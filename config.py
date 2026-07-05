@@ -20,11 +20,17 @@ if not GEMINI_API_KEY:
     )
 
 _owner_chat_id_raw = os.getenv("OWNER_CHAT_ID")
-if not _owner_chat_id_raw:
-    raise ValueError(
-        "OWNER_CHAT_ID is missing. Copy .env.example to .env and fill it in."
+OWNER_CHAT_ID: int | None = None
+if _owner_chat_id_raw:
+    try:
+        OWNER_CHAT_ID = int(_owner_chat_id_raw)
+    except ValueError:
+        print(
+            "WARNING: OWNER_CHAT_ID is not a valid number. "
+            "Owner notifications (leads, handoff) are disabled."
+        )
+else:
+    print(
+        "WARNING: OWNER_CHAT_ID is not set. "
+        "Owner notifications (leads, handoff) are disabled."
     )
-try:
-    OWNER_CHAT_ID = int(_owner_chat_id_raw)
-except ValueError:
-    raise ValueError("OWNER_CHAT_ID must be a numeric Telegram chat ID.")
