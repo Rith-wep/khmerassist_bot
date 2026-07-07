@@ -6,3 +6,6 @@ venv/
 *.log
 leads.json
 logs/
+node_modules/
+frontend/dist/
+frontend/build/

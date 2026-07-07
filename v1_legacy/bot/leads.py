@@ -1,10 +1,3 @@
-"""Lead capture: persisting leads and notifying the business owner.
-
-bot/ai.py detects when a lead is complete (via the AI's record_lead
-tool call) and hands the extracted name/phone/interest to process_lead()
-here, which is the only place that touches the leads file and sends the
-owner notification.
-"""
 import json
 import logging
 from datetime import datetime
@@ -18,7 +11,6 @@ from config import OWNER_CHAT_ID
 logger = logging.getLogger(__name__)
 
 _LEADS_FILE = Path(__file__).resolve().parent.parent / "leads.json"
-
 
 def _load_leads() -> list[dict]:
     if not _LEADS_FILE.exists():
