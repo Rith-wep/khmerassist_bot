@@ -28,8 +28,11 @@ business_id scope is a bug, even if it "works."
 - **Language:** Python 3.11+
 - **Web framework:** FastAPI
 - **Frontend:** React (single-page dashboard) talking to the FastAPI backend.
-  Keep it simple: one SPA, no SSR framework, no design system beyond a clean
-  component library.
+  Keep it simple: one SPA, no SSR framework. Built with Vite. Styling is
+  Tailwind CSS (v4, via the `@tailwindcss/vite` plugin) — utility classes
+  only, no separate component/design-system library beyond the shared
+  components in `frontend/src/components/`. Follow the design system below
+  on every page, present and future.
 - **Database:** PostgreSQL (on Railway). SQLAlchemy ORM + Alembic migrations.
 - **Bot framework:** python-telegram-bot (async), running MULTIPLE bots
   (one per business) from one process.
@@ -83,6 +86,50 @@ secrets: encrypt at rest, never log them, never return them fully via API
   business_id.
 - Rate-limit and error behavior per v1: never crash, polite apology in the
   customer's language, retry with backoff, log errors with business_id context.
+
+## Frontend design system — "fresh green on deep slate"
+
+Applies to every page, present and future (Dashboard, Leads, Conversations,
+Settings, onboarding wizard). Defined as Tailwind v4 theme tokens in
+`frontend/src/index.css` (`@theme` block) — never scatter raw hex values in
+components; use the token classes (`bg-base`, `text-accent`, etc.).
+
+**Palette (kept intentionally tight — no new colors without updating this
+section):**
+- `bg-base` (#1E2130) — dark shell: sidebar, auth pages.
+- `bg-surface` (#282C3E) — cards/panels/inputs on the dark shell.
+- `bg-page` (#F6F7F9) — light main content area background.
+- `accent` (#22C55E) / `accent-dark` (#16A34A hover) / `accent-soft`
+  (#DCFCE7 tint) — primary buttons, active nav item, prices, key stats.
+- `warning` (amber, #F59E0B) and `error` (red, #EF4444) — the only other
+  semantic colors. Nothing else.
+- `ink` (#111827) / `ink-muted` (#6B7280) — text on light surfaces.
+  `shell-text` (near-white) / `shell-text-muted` — text on the dark shell.
+
+**Typography:** headings use `font-heading` (Plus Jakarta Sans — bold,
+rounded, distinctive), body text uses `font-sans` (Inter). Both stacks
+include Noto Sans Khmer so Khmer content renders correctly everywhere
+without a separate Khmer-only style.
+
+**Layout:** dark sidebar (desktop) with the business name/logo top, nav
+items with `lucide-react` icons, active item highlighted in green. On
+mobile the sidebar becomes a fixed bottom tab bar (icons + tiny labels) —
+not a hamburger drawer — since owners primarily use phones. Light content
+area with a `PageHeader` (`frontend/src/components/PageHeader.jsx`): big
+title + description left, primary green action button right. Cards are
+white, `rounded-xl`, subtle border/shadow, consistent padding.
+
+**Shared components** (`frontend/src/components/`) — reuse these rather
+than re-styling inline: `Button` (variants: primary/secondary/destructive/
+ghost), `CategoryBadge` (colored chips), `PageHeader`, `EmptyState`
+(icon + message + CTA, never bare gray text), `Skeleton` (loading
+placeholders — no spinners), `Sidebar`, `Layout`.
+
+**Polish rules:** generous whitespace, consistent spacing scale, every
+interactive element has a hover/focus state, transitions are 150–200ms
+(`transition-colors duration-150` etc). No gradients-everywhere, no
+glassmorphism — distinctiveness comes from the navy+green identity and
+the heading font, not visual effects.
 
 ## Web app pages
 

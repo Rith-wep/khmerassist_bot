@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Noto Sans Khmer", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Plus Jakarta Sans", "Noto Sans Khmer", ui-sans-serif, system-ui, sans-serif;
+
+  /* Dark shell (sidebar, auth pages) */
+  --color-base: #1e2130;
+  --color-surface: #282c3e;
+  --color-surface-hover: #323752;
+  --color-shell-border: #363b52;
+  --color-shell-text: #f5f5f4;
+  --color-shell-text-muted: #9498ac;
+
+  /* Light content area */
+  --color-page: #f6f7f9;
+
+  /* Brand accent (fresh green) */
+  --color-accent: #22c55e;
+  --color-accent-dark: #16a34a;
+  --color-accent-soft: #dcfce7;
+  --color-accent-soft-text: #15803d;
+
+  /* Semantic (kept tight — only these two) */
+  --color-warning: #f59e0b;
+  --color-warning-soft: #fef3c7;
+  --color-error: #ef4444;
+  --color-error-soft: #fee2e2;
+
+  /* Light-surface text */
+  --color-ink: #111827;
+  --color-ink-muted: #6b7280;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-page);
+}
